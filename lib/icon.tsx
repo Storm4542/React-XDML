@@ -1,9 +1,13 @@
 import * as React from 'react';
 
-function Icon() {
-    return (
-        <span>icon</span>
-    );
+interface iconProps {
+    name: String;
 }
+
+const Icon: React.FunctionComponent<iconProps> = (props) => {
+    return (
+        <span>{props.name}</span>
+    );
+};
 
 export default Icon;
