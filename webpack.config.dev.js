@@ -1,4 +1,4 @@
-const base = require('./webpack.config')
+const base = require('./webpack.config');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = Object.assign({}, base, {
     mode: 'development',
@@ -10,4 +10,4 @@ module.exports = Object.assign({}, base, {
             template: 'example.html'
         })
     ],
-})
+});
