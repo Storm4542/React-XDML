@@ -1,0 +1,72 @@
+@import "../helper";
+
+.fui-dialog {
+  background: white;
+  position: fixed;
+  min-width: 20em;
+  min-height: 10em;
+  border-radius: 4px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+
+  &-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: fade_out(black, 0.5);
+    z-index: 1;
+  }
+
+  &-close {
+    color: white;
+    position: absolute;
+    bottom: 100%;
+    left: 100%;
+    height: 2em;
+    width: 2em;
+    border-radius: 50%;
+    transform: translate(-50%, 50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $main-color;
+  }
+
+
+  &-header {
+    font-size: 22px;
+    padding: 8px 16px;
+    border-bottom: 1px solid black;
+  }
+
+  &-main {
+    padding: 8px 16px;
+    border-bottom: 1px solid black;
+    min-height: 6em;
+  }
+
+  &-footer {
+    padding: 8px 16px;
+    text-align: right;
+
+    button {
+      box-sizing: border-box;
+      height: 32px;
+      border: 1px solid;
+      margin: 0 4px;
+      border-radius: 4px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
