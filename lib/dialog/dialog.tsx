@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Fragment} from 'react';
+import {Fragment, ReactFragment, ReactNode} from 'react';
 import './dialog.scss';
 import {Icon} from '../index';
 import {scopedClassMaker} from '../helpers/classes';
@@ -31,9 +31,13 @@ const Dialog: React.FunctionComponent<props> = (props) => {
                     <Icon name='close'/>
                 </div>
                 <main className={scopedClass('main')}> {props.children}</main>
-                <footer className={scopedClass('footer')}>
-                    {props.buttons}
-                </footer>
+                {
+                    props.buttons ? <footer className={scopedClass('footer')}>
+                        {props.buttons}
+                    </footer> : null
+
+                }
+
             </div>
         </Fragment>
         :
@@ -84,5 +88,19 @@ const confirm = (content: string, yes?: () => void, no?: () => void) => {
     document.body.append(div);
     ReactDOM.render(component, div);
 };
-export {alert, confirm};
+const modal = (content: ReactNode | ReactFragment) => {
+    const onClose = () => {
+        ReactDOM.render(React.cloneElement(component, {visible: false}), div);
+        ReactDOM.unmountComponentAtNode(div);
+        div.remove();
+    };
+    const component = <Dialog onClose={() => {onClose();}} visible={true}>
+        {content}
+    </Dialog>;
+    const div = document.createElement('div');
+    document.body.appendChild(div);
+    ReactDOM.render(component, div);
+    return onClose;
+};
+export {alert, confirm, modal};
 export default Dialog;
