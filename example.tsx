@@ -4,18 +4,23 @@ import {HashRouter as Router, Route, Link} from 'react-router-dom';
 import ButtonExample from './lib/button.example';
 import IconExample from './lib/icon/icon.example';
 import DialogExample from './lib/dialog/dialog.example';
-import Layout from './lib/layout/layout.example'
+import LayoutExample from './lib/layout/layout.example';
+import {Layout, Header, Aside, Content, Footer} from './lib/layout/layout';
+import './example.scss';
+
+const logo = require('./logo.png');
+
 ReactDOM.render(
     <Router>
-        <div>
-            <header>
-                <div className="logo">
-                    FUI
+        <Layout className="site-page">
+            <Header className='site-header'>
+                <div className="site-logo">
+                    <img width={80} src={logo} alt=""/>
+                    <span>FUI</span>
                 </div>
-
-            </header>
-            <div>
-                <aside>
+            </Header>
+            <Layout>
+                <Aside className="site-aside">
                     <h2>组件</h2>
                     <ul>
                         <li>
@@ -31,14 +36,17 @@ ReactDOM.render(
                             <Link to="/layout">layout</Link>
                         </li>
                     </ul>
-                </aside>
-                <main>
+                </Aside>
+                <Content className="site-main">
                     <Route path="/icon" component={IconExample}/>
                     <Route path="/button" component={ButtonExample}/>
                     <Route path="/dialog" component={DialogExample}/>
-                    <Route path="/layout" component={Layout}/>
-                </main>
-            </div>
-        </div>
+                    <Route path="/layout" component={LayoutExample}/>
+                </Content>
+            </Layout>
+            <Footer className="site-footer">
+                &copy; Storm
+            </Footer>
+        </Layout>
     </Router>
     , document.querySelector('#root'));
