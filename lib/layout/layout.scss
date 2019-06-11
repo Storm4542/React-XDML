@@ -1,0 +1,29 @@
+@import "../helper";
+
+.fui-layout {
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+
+  & & {
+    flex-grow: 1;
+    flex-direction: row;
+    border: 1px solid blue;
+  }
+
+  &-hasAside {
+    flex-direction: row;
+
+    .fui-layout {
+      flex-direction: column;
+    }
+  }
+
+  .fui-layout-content {
+    flex-grow: 1;
+    border: 1px solid green;
+  }
+
+
+}
+
