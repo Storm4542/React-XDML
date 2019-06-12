@@ -58,14 +58,17 @@ $main-color: #6e7072;
 
   ul {
     min-width: 12em;
+
     > li {
       a {
         padding: 8px $padding;
         color: $main-color;
         display: block;
+
         &:hover {
           color: #0074D9;
         }
+
         &.active {
           color: #ffffff;
           background-color: $main-color;
@@ -85,4 +88,12 @@ $main-color: #6e7072;
   font-size: 12px;
   padding: $padding 0;
   color: $main-color;
+}
+
+pre {
+  font-family: "Fira Code Medium", Consolas, monospace;
+}
+
+.example {
+  padding: 16px 0;
 }

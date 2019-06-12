@@ -5,7 +5,7 @@ import IconExample from './icon.example';
 
 const IconDemo = () => {
     return (
-        <Demo code={require('!!raw-     !./icon.example.tsx').default}>
+        <Demo code={require('!!raw-loader!./icon.example.tsx').default}>
              <IconExample/>
         </Demo>
     );
