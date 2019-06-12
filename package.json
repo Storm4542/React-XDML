@@ -34,10 +34,12 @@
     "css-loader": "^2.1.1",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.11.2",
+    "file-loader": "^4.0.0",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.3.1",
     "jest-junit": "^6.3.0",
     "node-sass": "^4.11.0",
+    "raw-loader": "^3.0.0",
     "react-test-renderer": "^16.8.4",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
@@ -46,8 +48,7 @@
     "typescript": "^3.3.3333",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.1",
-    "file-loader": "^4.0.0"
+    "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
     "@types/react-router-dom": "^4.3.1",

@@ -57,22 +57,29 @@ $main-color: #6e7072;
   }
 
   ul {
-    padding: 0 $padding;
     min-width: 12em;
-
     > li {
-      padding: $padding 0;
-
       a {
+        padding: 8px $padding;
         color: $main-color;
+        display: block;
+        &:hover {
+          color: #0074D9;
+        }
+        &.active {
+          color: #ffffff;
+          background-color: $main-color;
+        }
       }
     }
   }
 }
-.site-main{
+
+.site-main {
   padding-top: 16px;
 }
-.site-footer{
+
+.site-footer {
   display: flex;
   justify-content: center;
   font-size: 12px;
