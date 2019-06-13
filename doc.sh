@@ -1,3 +1,4 @@
+git checkout master
 yarn doc
 git checkout gh-pages
 mv -f doc/* ./
