@@ -31,7 +31,6 @@ const FormExample: React.FunctionComponent = () => {
                 key: 'username', validator: {
                     name: 'username',
                     validate(username: string) {
-                        console.log('有人调用validator');
                         return new Promise((resolve, reject) => {
                             checkUsername(username, resolve, reject);
                         });
