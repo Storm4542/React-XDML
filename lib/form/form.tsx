@@ -1,5 +1,8 @@
 import * as React from 'react';
 import {ReactFragment} from 'react';
+import Input from '../input/input';
+import {classes} from '../helpers/classes';
+import './form.scss';
 
 export interface FormValue {
     [K: string]: any
@@ -26,19 +29,30 @@ const Form: React.FunctionComponent<Props> = (props) => {
     };
     return (
         <form onSubmit={onSubmit}>
-            <div>
+            <table className=''>
+                <tbody>
                 {props.fields.map(f =>
-                    <div key={f.name}>
-                        {f.label}
-                        <input onChange={(e) => {onInputChange(f.name, e.target.value);}} value={formData[f.name]}
-                               type={f.input.type}/>
-                        <div>{props.errors[f.name]}</div>
-                    </div>
+                    <tr className={classes('fui-form-tr')} key={f.name}>
+                        <td className='fui-form-td'><span className='fui-form-label'>{f.label}</span></td>
+                        <td className='fui-form-td'>
+                            <Input className='fui-form-input'
+                                   onChange={(e) => {onInputChange(f.name, e.target.value);}}
+                                   value={formData[f.name]}
+                                   type={f.input.type}/>
+                            <div className='fui-form-error'>
+                                {props.errors[f.name] ? props.errors[f.name].join('，') :
+                                    <span>&nbsp;</span>}
+                            </div>
+                        </td>
+                    </tr>
                 )}
-            </div>
-            <div>
-                {props.buttons}
-            </div>
+                <tr className='fui-form-tr'>
+                    <td className='fui-form-td'/>
+                    <td className='fui-form-td'>  {props.buttons}</td>
+                </tr>
+                </tbody>
+            </table>
+
         </form>
     );
 };

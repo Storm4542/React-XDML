@@ -1,8 +1,19 @@
 import * as React from 'react';
 import Form, {FormValue} from './form';
 import {Fragment, useState} from 'react';
-import validator from './validator';
+import validator, {noErrors} from './validator';
+import Button from '../button/button';
 
+const USERS = ['frank', 'amy', 'maybe'];
+const checkUsername = (username: string, success: () => void, fail: () => void) => {
+    setTimeout(() => {
+        if (USERS.indexOf(username) >= 0) {
+            fail();
+        } else {
+            success();
+        }
+    }, 1000);
+};
 
 const FormExample: React.FunctionComponent = () => {
     const [formData, setFormData] = useState<FormValue>({
@@ -15,13 +26,30 @@ const FormExample: React.FunctionComponent = () => {
     ]);
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         const rules = [
-            {key: 'username', required: true},
-            {key: 'username', required: true, maxLength: 12, minLength: 6},
-            {key: 'username', required: true, pattern: /^[A-Za-z0-9]+$/},
+
+            {
+                key: 'username', validator: {
+                    name: 'username',
+                    validate(username: string) {
+                        console.log('有人调用validator');
+                        return new Promise((resolve, reject) => {
+                            checkUsername(username, resolve, reject);
+                        });
+                    }
+                }
+            },
+
             {key: 'password', required: true, pattern: /^[A-Za-z0-9]+$/},
         ];
-        const formError = validator(formData, rules);
-        setErrors(formError);
+        validator(formData, rules, (errors) => {
+            console.log(errors);
+            if (noErrors(errors)) {
+                //没错
+            } else {
+                setErrors(errors);
+            }
+        });
+
     };
     const [errors, setErrors] = useState({});
     return (
@@ -32,8 +60,8 @@ const FormExample: React.FunctionComponent = () => {
               errors={errors}
               buttons={
                   <Fragment>
-                      <button type='submit'>提交</button>
-                      <button>返回</button>
+                      <Button type='submit'>提交</Button>
+                      <Button level='important'>返回</Button>
                   </Fragment>
 
               }/>
@@ -41,3 +69,5 @@ const FormExample: React.FunctionComponent = () => {
     );
 };
 export default FormExample;
+
+
