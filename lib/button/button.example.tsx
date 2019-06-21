@@ -4,7 +4,7 @@ import Button from './button';
 const ButtonExample: React.FunctionComponent = () => {
     return (
         <div>
-            <Button/>
+            <Button>Default</Button>
         </div>
     );
 };
