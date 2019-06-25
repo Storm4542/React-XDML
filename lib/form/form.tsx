@@ -4,6 +4,7 @@ import Input from '../input/input';
 import {classes} from '../helpers/classes';
 import './form.scss';
 
+
 export interface FormValue {
     [K: string]: any
 }
@@ -14,7 +15,8 @@ interface Props {
     buttons: ReactFragment;
     onSubmit: (formData: React.FormEvent<HTMLFormElement>) => void
     onChange: (value: FormValue) => void;
-    errors: { [K: string]: string[] }
+    errors: { [K: string]: string[] },
+    transformErrors?: (message: string) => string
 }
 
 const Form: React.FunctionComponent<Props> = (props) => {
@@ -26,6 +28,15 @@ const Form: React.FunctionComponent<Props> = (props) => {
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         props.onSubmit(e);
+    };
+
+    const transformError = (message: any) => {
+        const list: any = {
+            required: '必填',
+            maxLength: '太长',
+            minLength: '太短'
+        };
+        return list[message] || props.transformErrors && props.transformErrors(message) || '未知错误';
     };
     return (
         <form onSubmit={onSubmit}>
@@ -40,7 +51,7 @@ const Form: React.FunctionComponent<Props> = (props) => {
                                    value={formData[f.name]}
                                    type={f.input.type}/>
                             <div className='fui-form-error'>
-                                {props.errors[f.name] ? props.errors[f.name].join('，') :
+                                {props.errors[f.name] ? transformError(props.errors[f.name][0]) :
                                     <span>&nbsp;</span>}
                             </div>
                         </td>
@@ -55,5 +66,7 @@ const Form: React.FunctionComponent<Props> = (props) => {
 
         </form>
     );
+
 };
+
 export default Form;

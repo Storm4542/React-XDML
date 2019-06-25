@@ -24,24 +24,31 @@ const FormExample: React.FunctionComponent = () => {
         {name: 'username', label: '用户名', input: {type: 'text'}},
         {name: 'password', label: '密码', input: {type: 'password'}}
     ]);
+    const validate = (username: string) => {
+        return new Promise<string>((resolve, reject) => {
+            checkUsername(username, resolve, () => {reject('unique');});
+        });
+    };
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         const rules = [
 
             {
-                key: 'username', validator: {
-                    name: 'username',
-                    validate(username: string) {
-                        return new Promise((resolve, reject) => {
-                            checkUsername(username, resolve, reject);
-                        });
-                    }
-                }
+                key: 'username', required: true, validate
+            },
+            {
+                key: 'username', required: true, validate
+            },
+            {
+                key: 'password', required: true, validate
+            },
+            {
+                key: 'password', required: true, validate
             },
 
             {key: 'password', required: true, pattern: /^[A-Za-z0-9]+$/},
         ];
+
         validator(formData, rules, (errors) => {
-            console.log(errors);
             if (noErrors(errors)) {
                 //没错
             } else {
@@ -51,12 +58,19 @@ const FormExample: React.FunctionComponent = () => {
 
     };
     const [errors, setErrors] = useState({});
+    const transformErrors = (message: string) => {
+        const list: any = {
+            unique: '用户名已存在'
+        };
+        return list[message];
+    };
     return (
         <Form value={formData}
               fields={fields}
               onSubmit={onSubmit}
               onChange={newValue => {setFormData(newValue);}}
               errors={errors}
+              transformErrors={transformErrors}
               buttons={
                   <Fragment>
                       <Button type='submit'>提交</Button>

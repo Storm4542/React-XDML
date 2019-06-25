@@ -1,22 +1,17 @@
 import {FormValue} from './form';
 
+
 interface FormRule {
     key: string;
     required?: boolean;
     maxLength?: number;
     minLength?: number;
     pattern?: RegExp;
-    validator?: {
-        name: string,
-        validate: (value: any) => Promise<any>
-    }
+    validate?: (value: any) => Promise<string>
+
 }
 
-interface OneError {
-    message: string;
-    promise?: Promise<any>
-}
-
+type OneError = string | Promise<any>
 type FormRules = Array<FormRule>;
 
 function isEmpty(value: any) {
@@ -29,7 +24,7 @@ export function noErrors(errors: any) {
 }
 
 
-const validator = (formValue: FormValue, rules: FormRules, callback: (errors: any) => void) => {
+const validator = (formValue: FormValue, rules: FormRules, callback: (errors: any) => any) => {
     let errors: any = {};
     const addError = (key: string, error: OneError) => {
         if (errors[key] === undefined) {
@@ -39,51 +34,48 @@ const validator = (formValue: FormValue, rules: FormRules, callback: (errors: an
     };
     rules.map(rule => {
         const value = formValue[rule.key];
-        if (rule.validator) {
-            const promise = rule.validator.validate(value);
-            addError(rule.key, {message: '用户名已存在', promise});
+        if (rule.validate) {
+            const promise = rule.validate(value);
+            addError(rule.key, promise);
         }
         if (rule.required && isEmpty(value)) {
-            addError(rule.key, {message: '必填'});
+            addError(rule.key, 'required');
             return;
         }
         if (rule.maxLength) {
             if (!isEmpty(value) && value.length > rule.maxLength) {
-                addError(rule.key, {message: '太长'});
+                addError(rule.key, 'maxLength');
                 return;
             }
         }
         if (rule.minLength) {
             if (!isEmpty(value) && value.length < rule.minLength) {
-                addError(rule.key, {message: '太短'});
+                addError(rule.key, 'minLength');
                 return;
             }
         }
         if (rule.pattern) {
             if (!(rule.pattern.test(value))) {
-                addError(rule.key, {message: '不符合规则'});
+                addError(rule.key, 'pattern');
                 return;
             }
         }
 
     });
-    const myPromises = flat(Object.values(errors)).filter(item => item.promise).map(item => item.promise);
-    console.log(Object.keys(errors), errors);
-    Promise.all(myPromises).then(() => {
-        const newErrors = fromEntries(
-            Object.keys(errors).map<[string, string[]]>(key =>
-                [key, errors[key].map((item: OneError) => item.message)]
-            )
-        );
-        callback(newErrors);
-    }, () => {
-        const newErrors = fromEntries(
-            Object.keys(errors).map<[string, string[]]>(key =>
-                [key, errors[key].map((item: OneError) => item.message)]
-            )
-        );
-        callback(newErrors);
-    });
+
+    const kvErrors = Object.keys(errors).map(key =>
+        errors[key].map((promise: any) => [key, promise])  //[ [[username:promise1], [username:promise2]],[password:promise]]
+    );
+    const flatErrors = flat(kvErrors); // [[username:promise1],[username:promise2],[password:promise]]
+    const promiseErrors = flatErrors.map(([key, promiseOrString]) => (
+        promiseOrString instanceof Promise ? promiseOrString : Promise.reject(promiseOrString)).then(() => {
+            return [key, undefined];
+        },
+        (reason: string) => {
+            return [key, reason];
+        })); //[promise,promise,promise]
+
+    Promise.all(promiseErrors).then(res => callback(zip(res.filter(item => item[1]))));
 };
 export default validator;
 
@@ -99,10 +91,12 @@ function flat(array: Array<any>) {
     return result;
 }
 
-function fromEntries(array: Array<[string, string[]]>) {
+// [[1:2],[3,4]] => {1:2,3:4}
+function zip(kvList: Array<any>) {
     let result: any = {};
-    for (let i = 0; i < array.length; i++) {
-        result[array[i][0]] = array[i][1];
-    }
+    kvList.map(([key, value]) => {
+        result[key] = result[key] || [];
+        result[key].push(value);
+    });
     return result;
 }
